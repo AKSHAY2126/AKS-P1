@@ -1,0 +1,44 @@
+# .github/workflows/terraform-aks.yml
+
+name: 'Terraform AKS Deployment'
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  terraform:
+    name: 'Terraform AKS Deployment'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: 1.5.0  # Specify the required Terraform version
+
+      - name: Azure Login
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Terraform Init
+        run: terraform init
+
+      - name: Terraform Plan
+        run: terraform plan -out=tfplan
+
+      - name: Terraform Apply
+        if: github.ref == 'refs/heads/main'  # Only apply on the 'main' branch
+        run: terraform apply -auto-approve tfplan
+
+      # Optional: Clean up the plan file after deployment
+      - name: Cleanup
+        run: rm -rf tfplan
