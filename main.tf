@@ -1,7 +1,7 @@
 # Create Resource Group
 resource "azurerm_resource_group" "aks_rg" {
   name     = "aks-resource-group"
-  location = "East US"
+  location = "Central India"
 }
 
 
@@ -20,7 +20,7 @@ resource "azurerm_kubernetes_cluster" "aks" {
   location            = azurerm_resource_group.aks_rg.location
   resource_group_name = azurerm_resource_group.aks_rg.name
   dns_prefix          = "aksdns"
-  kubernetes_version  = "1.26.3" # Use the desired Kubernetes version
+  kubernetes_version  = "1.29.7" # Use the desired Kubernetes version
 
   default_node_pool {
     name       = "default"
